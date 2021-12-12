@@ -127,3 +127,4 @@ dmypy.json
 
 code/checkpoints/
 data/
+code/vgg16_imagenet.h5
