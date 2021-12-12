@@ -5,45 +5,12 @@ from tensorflow.keras.applications import ResNet50V2
 
 
 class YourModel(tf.keras.Model):
-    """ Your own neural network model. """
 
     def __init__(self):
         super(YourModel, self).__init__()
 
-        # TODO: Select an optimizer for your network (see the documentation
-        #       for tf.keras.optimizers)
-
         self.optimizer = tf.keras.optimizers.Adam(lr=1e-4, decay=1e-6)
 
-        # TODO: Build your own convolutional neural network, using Dropout at
-        #       least once. The input image will be passed through each Keras
-        #       layer in self.architecture sequentially. Refer to the imports
-        #       to see what Keras layers you can use to build your network.
-        #       Feel free to import other layers, but the layers already
-        #       imported are enough for this assignment.
-        #
-        #       Remember: Your network must have under 15 million parameters!
-        #       You will see a model summary when you run the program that
-        #       displays the total number of parameters of your network.
-        #
-        #       Remember: Because this is a 15-scene classification task,
-        #       the output dimension of the network must be 15. That is,
-        #       passing a tensor of shape [batch_size, img_size, img_size, 1]
-        #       into the network will produce an output of shape
-        #       [batch_size, 15].
-        #
-        #       Note: Keras layers such as Conv2D and Dense give you the
-        #             option of defining an activation function for the layer.
-        #             For example, if you wanted ReLU activation on a Conv2D
-        #             layer, you'd simply pass the string 'relu' to the
-        #             activation parameter when instantiating the layer.
-        #             While the choice of what activation functions you use
-        #             is up to you, the final layer must use the softmax
-        #             activation function so that the output of your network
-        #             is a probability distribution.
-        #
-        #       Note: Flatten is a very useful layer. You shouldn't have to
-        #             explicitly reshape any tensors anywhere in your network.
         self.architecture = [
             Conv2D(64, 3, 1, activation="relu", padding="same"),
             Dropout(rate=0.1),
@@ -68,35 +35,17 @@ class YourModel(tf.keras.Model):
             Dense(20, activation='sigmoid')
         ]
 
-        # self.architecture = tf.keras.Sequential(self.architecture, name='my_model')
-
     def call(self, x):
-        """ Passes input image through the network. """
         for layer in self.architecture:
              x = layer(x)
-        # x = self.architecture(x)
         return x
-
-    @staticmethod
-    def loss_fn(labels, predictions):
-        """ Loss function for the model. """
-
-        # TODO: Select a loss function for your network (see the documentation
-        #       for tf.keras.losses)
-
-        return tf.keras.losses.sparse_categorical_crossentropy(labels, predictions)
 
 
 class VGGModel(tf.keras.Model):
     def __init__(self):
         super(VGGModel, self).__init__()
 
-        # TODO: Select an optimizer for your network (see the documentation
-        #       for tf.keras.optimizers)
-
         self.optimizer = tf.keras.optimizers.Adam(lr=1e-4, decay=1e-6)
-
-        # Don't change the below:
 
         self.vgg16 = [
             # Block 1
@@ -137,12 +86,8 @@ class VGGModel(tf.keras.Model):
             MaxPool2D(2, name="block5_pool")
         ]
 
-        # TODO: Make all layers in self.vgg16 non-trainable. This will freeze the
-        #       pretrained VGG16 weights into place so that only the classificaiton
-        #       head is trained.
         for layer in self.vgg16:
             layer.trainable = False
-        # TODO: Write a classification head for our 15-scene classification task.
 
         self.head = [
             Flatten(),
@@ -153,7 +98,6 @@ class VGGModel(tf.keras.Model):
             Dense(20, activation='sigmoid')
         ]
 
-        # Don't change the below:
         self.vgg16 = tf.keras.Sequential(self.vgg16, name="vgg_base")
         self.head = tf.keras.Sequential(self.head, name="vgg_head")
 
@@ -165,26 +109,12 @@ class VGGModel(tf.keras.Model):
 
         return x
 
-    @staticmethod
-    def loss_fn(labels, predictions):
-        """ Loss function for model. """
-
-        # TODO: Select a loss function for your network (see the documentation
-        #       for tf.keras.losses)
-
-        return tf.keras.losses.sparse_categorical_crossentropy(labels, predictions)
-
 
 class ResNetModel(tf.keras.Model):
     def __init__(self):
         super(ResNetModel, self).__init__()
 
-        # TODO: Select an optimizer for your network (see the documentation
-        #       for tf.keras.optimizers)
-
         self.optimizer = tf.keras.optimizers.Adam(lr=1e-4, decay=1e-6)
-
-        # Don't change the below:
 
         self.resnetv2 = ResNet50V2(include_top=False, weights='imagenet')
 
@@ -217,12 +147,3 @@ class ResNetModel(tf.keras.Model):
         x = self.head(x)
 
         return x
-
-    @staticmethod
-    def loss_fn(labels, predictions):
-        """ Loss function for model. """
-
-        # TODO: Select a loss function for your network (see the documentation
-        #       for tf.keras.losses)
-
-        return tf.keras.losses.sparse_categorical_crossentropy(labels, predictions)

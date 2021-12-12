@@ -32,10 +32,6 @@ def parse_args():
         help='''Which task of the assignment to run -
         training from scratch (1), or fine tuning VGG-16 (3).''')
     parser.add_argument(
-        '--data',
-        default='..'+os.sep+'data'+os.sep,
-        help='Location where the dataset is stored.')
-    parser.add_argument(
         '--load-vgg',
         default='vgg16_imagenet.h5',
         help='''Path to pre-trained VGG-16 file (only applicable to
@@ -48,21 +44,11 @@ def parse_args():
         train your model. If you want to continue training from where
         you left off, this is how you would load your weights.''')
     parser.add_argument(
-        '--confusion',
-        action='store_true',
-        help='''Log a confusion matrix at the end of each
-        epoch (viewable in Tensorboard). This is turned off
-        by default as it takes a little bit of time to complete.''')
-    parser.add_argument(
         '--evaluate',
         action='store_true',
         help='''Skips training and evaluates on the test set once.
         You can use this to test an already trained model by loading
         its checkpoint.''')
-    parser.add_argument(
-        '--lime-image',
-        default='test/Bedroom/image_0003.jpg',
-        help='''Name of an image in the dataset to use for LIME evaluation.''')
 
     return parser.parse_args()
 
