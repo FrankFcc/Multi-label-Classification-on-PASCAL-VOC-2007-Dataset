@@ -7,7 +7,7 @@ import tensorflow as tf
 
 import pandas as pd
 import preprocess
-from preprocess import generate_dataset, VOC_CLASSES
+from preprocess import generate_dataset, VOC_CLASSES, create_data
 from models import YourModel, VGGModel, ResNetModel
 from keras import regularizers, optimizers
 from matplotlib import pyplot as plt
@@ -88,7 +88,14 @@ if __name__ == '__main__':
     timestamp = time_now.strftime("%m%d%y-%H%M%S")
     init_epoch = 0
 
-    train_generator, valid_generator, test_generator = preprocess.generate_dataset()
+    train_data = create_data(
+        'C:/Users/44750/PycharmProjects/CSCI 1430 Test/CSCI-1430-FinalProject/data/VOCdevkit_2007/VOC2007/ImageSets/Main/',
+        0)
+    test_data = create_data(
+        'C:/Users/44750/PycharmProjects/CSCI 1430 Test/CSCI-1430-FinalProject/data/VOCdevkit_2007/VOC2007test/ImageSets/Main/',
+        1)
+
+    train_generator, valid_generator, test_generator = preprocess.generate_dataset(train_data, test_data)
 
     os.chdir(sys.path[0])
 
@@ -160,13 +167,13 @@ if __name__ == '__main__':
               initial_epoch=0,)
     print('\ntesting\n-------------------------')
     test_generator.reset()
-    pred_two = model.predict(test_generator,
+    prediction_data = model.predict(test_generator,
                                        steps=STEP_SIZE_TEST,
                                        # steps = 100,
                                        verbose=1)
-    pred_bool = (pred_two > 0.5)
+    threshold_pred = (prediction_data > 0.5)
 
-    predictions = pred_bool.astype(int)
+    predictions = threshold_pred.astype(int)
     # columns should be the same order of y_col
     results = pd.DataFrame(predictions, columns=VOC_CLASSES)
     results["Filenames"] = test_generator.filenames

@@ -93,13 +93,7 @@ def create_data(data_path, mode):
     return output_data
 
 
-def generate_dataset():
-    train_data = create_data(
-        'C:/Users/44750/PycharmProjects/CSCI 1430 Test/CSCI-1430-FinalProject/data/VOCdevkit_2007/VOC2007/ImageSets/Main/', 0)
-    test_data = create_data(
-        'C:/Users/44750/PycharmProjects/CSCI 1430 Test/CSCI-1430-FinalProject/data/VOCdevkit_2007/VOC2007test/ImageSets/Main/',
-        1)
-
+def generate_dataset(train_data, test_data):
     datagen = ImageDataGenerator(rescale=1. / 255.)
     test_datagen = ImageDataGenerator(rescale=1. / 255.)
 
